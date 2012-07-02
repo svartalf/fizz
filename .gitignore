@@ -1,0 +1,5 @@
+# IDE files
+.project
+.cproject
+Debug
+Release
