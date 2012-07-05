@@ -8,6 +8,7 @@
 #include <ev.h>
 
 #include "generator.h"
+#include "server.h"
 
 /**
  * Usage:
@@ -23,9 +24,10 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	Context ctx = generator_init(atoi(argv[1]), atoi(argv[2]));
+	//Context ctx = generator_init(atoi(argv[1]), atoi(argv[2]));
+	//printf("%lld\n", generator_next_id(&ctx));
 
-	printf("%lld\n", generator_next_id(&ctx));
+	server_serve(7000);
 
 	return 0;
 }
