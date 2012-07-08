@@ -11,12 +11,20 @@
 
 #include <ev.h>
 
+#include "generator.h"
+
+
 /**
  * When the client socket will become writeable, send to him new ID
  */
 static void write_callback(EV_P, ev_io *w, int revents) {
 	// TODO: check for EV_ERROR & revents
-	send(w->fd, "test", 4, 0);
+
+	Context ctx = *(Context*)(w->data);
+	long long id = generator_next_id(&ctx);
+	char response[18];
+	sprintf(response, "%lld", id);
+	send(w->fd, response, 18, 0);
 
 	// TODO: check for correct way of socket closing and loop stopping
 	close(w->fd);
@@ -33,6 +41,7 @@ static void accept_callback(EV_P, ev_io *w, int revents) {
 	struct sockaddr_in address;
 	socklen_t client_len = sizeof(address);
 	struct ev_io *client = (struct ev_io*) malloc (sizeof(struct ev_io));
+	client->data = w->data;
 
 	int sock = accept(w->fd, (struct sockaddr *)&address, &client_len);
 
@@ -44,7 +53,7 @@ static void accept_callback(EV_P, ev_io *w, int revents) {
 /**
  * Start serving
  */
-int server_serve(int port) {
+int server_serve(Context ctx, int port) {
 
 	// Create TCP socket
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -64,13 +73,14 @@ int server_serve(int port) {
 
 	struct ev_loop *loop = EV_DEFAULT;
 	ev_io watcher;
-	printf("Init\n");
+	// Save pointer of the context into watcher
+	watcher.data = (void *) &ctx;
 
 	// Initialize and start IO watcher
 	// `accept_callback` will be called when sock will become writeable
 	ev_io_init(&watcher, accept_callback, sock, EV_READ);
 	ev_io_start(loop, &watcher);
-	printf("Start\n");
+
 	// Run loop
 	ev_run(loop, 0);
 

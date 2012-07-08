@@ -1,6 +1,9 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
-int server_serve(int port);
+#include "generator.h"
+
+
+int server_serve(Context ctx, int port);
 
 #endif /* SERVER_H_ */
