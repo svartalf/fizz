@@ -14,14 +14,14 @@
  *
  * And still doing it!
  */
-long long time(EV_P) {
+static inline long long time(EV_P) {
 	return (long long)(ev_now(loop)*1000);
 }
 
 /**
  * Skipping some time
  */
-long long til_next_millis(long long last_timestamp, EV_P) {
+static inline long long til_next_millis(long long last_timestamp, EV_P) {
 	long long timestamp = time(loop);
 
 	while (timestamp <= last_timestamp) {
@@ -60,7 +60,6 @@ Context generator_init(int worker_id, int datacenter_id) {
  * Generate next ID based on the worker id, datacenter id and current time
  */
 long long generator_next_id(Context *ctx, EV_P) {
-	// Converting `ev_time` double into long long milliseconds
 
 	long long timestamp = time(loop);
 
