@@ -18,12 +18,14 @@
  * When the client socket will become writeable, send to him new ID
  */
 static void write_callback(EV_P, ev_io *w, int revents) {
-	// TODO: check for EV_ERROR & revents
+	if (EV_ERROR & revents) {
+		perror("Client response failed");
+		return;
+	}
 
 	Context ctx = *(Context*)(w->data);
-	long long id = generator_next_id(&ctx);
 	char response[18];
-	sprintf(response, "%lld", id);
+	sprintf(response, "%lld", generator_next_id(&ctx));
 	send(w->fd, response, 18, 0);
 
 	// TODO: check for correct way of socket closing and loop stopping
@@ -36,7 +38,10 @@ static void write_callback(EV_P, ev_io *w, int revents) {
  * Accept all the client connections
  */
 static void accept_callback(EV_P, ev_io *w, int revents) {
-	// TODO: check for EV_ERROR & revents
+	if (EV_ERROR & revents) {
+		perror("Accept failed");
+		return;
+	}
 
 	struct sockaddr_in address;
 	socklen_t client_len = sizeof(address);
@@ -57,6 +62,10 @@ int server_serve(Context ctx, int port) {
 
 	// Create TCP socket
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == -1) {
+		perror("Socket creation failed");
+		exit(1);
+	}
 	// TODO: check for sock value here
 
 	// Create address for socket binding
@@ -66,10 +75,17 @@ int server_serve(Context ctx, int port) {
 	address.sin_port = htons(port);
 
 	// Bind socket to address
-	bind(sock, (struct sockaddr*) &address, sizeof(address));
+	if (bind(sock, (struct sockaddr*) &address, sizeof(address)) != 0) {
+		perror("Binding to port failed");
+		exit(2);
+	}
 
 	// Start listening on socket
-	listen(sock, SOMAXCONN);  // TODO: What backlog size should be used?
+	// TODO: What backlog size should be used?
+	if (listen(sock, SOMAXCONN) != 0) {
+		perror("Listen on socket failed");
+		exit(3);
+	};
 
 	struct ev_loop *loop = EV_DEFAULT;
 	ev_io watcher;
