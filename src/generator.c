@@ -14,18 +14,18 @@
  *
  * And still doing it!
  */
-long long time() {
-	return (long long)(ev_time()*1000);
+long long time(EV_P) {
+	return (long long)(ev_now(loop)*1000);
 }
 
 /**
  * Skipping some time
  */
-long long til_next_millis(long long last_timestamp) {
-	long long timestamp = time();
+long long til_next_millis(long long last_timestamp, EV_P) {
+	long long timestamp = time(loop);
 
 	while (timestamp <= last_timestamp) {
-		timestamp = time();
+		timestamp = time(loop);
 	}
 
 	return timestamp;
@@ -59,15 +59,15 @@ Context generator_init(int worker_id, int datacenter_id) {
 /**
  * Generate next ID based on the worker id, datacenter id and current time
  */
-long long generator_next_id(Context *ctx) {
+long long generator_next_id(Context *ctx, EV_P) {
 	// Converting `ev_time` double into long long milliseconds
 
-	long long timestamp = time();
+	long long timestamp = time(loop);
 
 	if (ctx->last_timestamp == timestamp) {
 		ctx->sequence = (ctx->sequence + 1) & ctx->sequence_mask;
 		if (ctx->sequence == 0) {
-			timestamp = til_next_millis(ctx->last_timestamp);
+			timestamp = til_next_millis(ctx->last_timestamp, loop);
 		}
 	} else {
 		ctx->sequence = 0;

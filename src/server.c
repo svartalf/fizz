@@ -25,7 +25,7 @@ static void write_callback(EV_P, ev_io *w, int revents) {
 
 	Context ctx = *(Context*)(w->data);
 	char response[18];
-	sprintf(response, "%lld", generator_next_id(&ctx));
+	sprintf(response, "%lld", generator_next_id(&ctx, loop));
 	send(w->fd, response, 18, 0);
 
 	// TODO: check for correct way of socket closing and loop stopping

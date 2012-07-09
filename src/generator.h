@@ -1,6 +1,8 @@
 #ifndef GENERATOR_H_
 #define GENERATOR_H_
 
+#include "ev.h"
+
 /**
  * Context for ID generator
  */
@@ -25,6 +27,6 @@ typedef struct context {
 
 Context generator_init(int worker_id, int datacenter_id);
 
-long long generator_next_id(Context *ctx);
+long long generator_next_id(Context *ctx, EV_P);
 
 #endif // GENERATOR_H_
