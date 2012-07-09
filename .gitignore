@@ -16,3 +16,7 @@ install-sh
 missing
 stamp-h1
 fizz
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
