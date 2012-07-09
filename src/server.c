@@ -69,7 +69,7 @@ int server_serve(Context ctx, int port) {
 	bind(sock, (struct sockaddr*) &address, sizeof(address));
 
 	// Start listening on socket
-	listen(sock, 5);  // TODO: What backlog size should be used?
+	listen(sock, SOMAXCONN);  // TODO: What backlog size should be used?
 
 	struct ev_loop *loop = EV_DEFAULT;
 	ev_io watcher;
