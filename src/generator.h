@@ -15,9 +15,9 @@ typedef struct context {
 
 	// Various once initialized variables
 	long long twepoch;
-	char worker_id_bits;
-	char datacenter_id_bits;
-	char sequence_bits;
+	unsigned char worker_id_bits;
+	unsigned char datacenter_id_bits;
+	unsigned char sequence_bits;
 	int worker_id_shift;
 	int datacenter_id_shift;
 	int timestamp_left_shift;

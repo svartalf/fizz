@@ -13,6 +13,9 @@
  * Long long time ago this function generates current time in milliseconds.
  *
  * And still doing it!
+ *
+ * As lint says, it shadows outer declaration of the `time` function,
+ * but I think it does not matters here.
  */
 static inline long long time(EV_P) {
 	return (long long)(ev_now(loop)*1000);

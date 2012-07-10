@@ -1,7 +1,7 @@
 Fizz
 =====
 
-Fizz is a C based clone of the Twitter Snowflake (https://github.com/twitter/snowflake/), network service for generating unique IDE numbers at high scale with some simple guarantees.
+Fizz is a C based clone of the Twitter Snowflake (https://github.com/twitter/snowflake/), network service for generating unique ID numbers at high scale with some simple guarantees.
 
 First-level warning
 --------------------
